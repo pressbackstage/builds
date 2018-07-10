@@ -187,7 +187,7 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 	fi
 fi
 
-if [ -f /etc/mysql/mysqld.conf.d/nomaster ];then
+if [ -f /etc/mysql/mysqld.conf.d/nomaster ]; then
 	exec "$@" --wsrep-new-cluster
 	rm -f /etc/mysql/mysqld.conf.d/nomaster
 else
