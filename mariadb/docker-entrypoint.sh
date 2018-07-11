@@ -188,8 +188,10 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 fi
 
 if [ -e /etc/mysql/mariadb.conf.d/nomaster ]; then
+	echo "Elected as master"
 	exec "$@" --wsrep-new-cluster
 	rm -f /etc/mysql/mariadb.conf.d/nomaster
 else
+	echo "Going as slave"
 	exec "$@"
 fi
