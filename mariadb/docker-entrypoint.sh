@@ -93,12 +93,11 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 		echo 'Database initialized'
 
 		SOCKET="$(_get_config 'socket' "$@")"
-		if [ -e /etc/mysql/mariadb.conf.d/nomaster ]; then
-			echo "Elected as master"
-			"$@" --wsrep-new-cluster --skip-networking --socket="${SOCKET}" &
-			rm -f /etc/mysql/mariadb.conf.d/nomaster
-		else
+		if [ -e /etc/mysql/mariadb.conf.d/master ]; then
 			"$@" --skip-networking --socket="${SOCKET}" &
+		else
+			touch /etc/mysql/mariadb.conf.d/master
+			"$@" --wsrep-new-cluster --skip-networking --socket="${SOCKET}" &
 		fi
 		pid="$!"
 
