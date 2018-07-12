@@ -93,12 +93,13 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 		echo 'Database initialized'
 
 		SOCKET="$(_get_config 'socket' "$@")"
-		chown -R mysql:mysql /etc/mysql/mariadb.conf.d/
-		if [ -e /etc/mysql/mariadb.conf.d/hasmaster ]; then
-			"$@" --skip-networking --socket="${SOCKET}" &
-		else
-			touch /etc/mysql/mariadb.conf.d/hasmaster
+		IP=`hostname -I`
+		MASTER=`cat /etc/mysql/mariadb.conf.d/master`
+
+		if [ ${IP} = ${MASTER} ]; then
 			"$@" --wsrep-new-cluster --skip-networking --socket="${SOCKET}" &
+		else
+			"$@" --skip-networking --socket="${SOCKET}" &
 		fi
 		pid="$!"
 
